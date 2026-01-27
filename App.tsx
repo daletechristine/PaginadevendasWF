@@ -29,7 +29,8 @@ import {
   TESTIMONIALS,
 
   BONUSES,
-  VSL_THUMBNAIL_URL
+  VSL_THUMBNAIL_URL,
+  LOGO_URL
 } from './constants';
 
 // Componente de Logo - Ajustado com padding superior reforçado para evitar cortes na aliança
@@ -145,7 +146,7 @@ const App: React.FC = () => {
             <span className="text-xs md:text-sm font-medium text-purple-100">O nº 1 em Organização de Casamentos</span>
           </div>
 
-          <h1 className="text-2xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 md:mb-6 leading-tight max-w-6xl mx-auto animate-fade-in-up">
+          <h1 className="text-xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 md:mb-6 leading-tight max-w-6xl mx-auto animate-fade-in-up">
             Você aproveita a jornada até o altar. <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-200 to-purple-200">
               O WeddingFin cuida do seu bolso.
@@ -153,9 +154,7 @@ const App: React.FC = () => {
           </h1>
 
           <p className="text-base md:text-xl text-purple-200 mb-8 md:mb-10 max-w-3xl mx-auto leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-            Imagine a tranquilidade de ver seu casamento tomando forma, sabendo exatamente para onde vai cada centavo.
-            Acompanhe em tempo real o quanto já investiu e o quanto falta, tudo em um painel visual lindo e automático.
-            <span className="block mt-4 font-semibold text-white">Simples, visual e automático. Para que vocês só se preocupem em dizer 'Sim'.</span>
+            Tenha controle total em um painel visual e automático. Saiba para onde vai cada centavo e acompanhe seus gastos em tempo real, sem planilhas complexas.
           </p>
 
           {/* <div className="relative w-full max-w-4xl mx-auto rounded-2xl shadow-2xl overflow-hidden border-4 border-white/20 mb-10 group cursor-pointer animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
@@ -203,9 +202,9 @@ const App: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="lg:w-1/2 space-y-4 md:space-y-6 w-full">
+            <div className="lg:w-1/2 w-full flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 -mx-4 px-4 md:flex-col md:overflow-visible md:pb-0 md:mx-0 md:px-0 md:gap-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               {PAIN_POINTS.map((pain, index) => (
-                <div key={index} className="flex flex-col sm:flex-row gap-4 p-5 md:p-6 rounded-2xl bg-red-50/50 border border-red-100 hover:bg-red-50 transition-colors">
+                <div key={index} className="min-w-[85%] md:min-w-0 flex-shrink-0 snap-center flex flex-col sm:flex-row gap-4 p-5 md:p-6 rounded-2xl bg-red-50/50 border border-red-100 hover:bg-red-50 transition-colors">
                   <div className="flex-shrink-0 flex justify-center sm:justify-start">
                     <pain.icon className="text-red-500" size={28} />
                   </div>
@@ -265,27 +264,27 @@ const App: React.FC = () => {
             </p>
           </div>
 
-          <div className="max-w-5xl mx-auto mb-16 md:mb-20 animate-fade-in-up">
-            <div className="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl border-4 border-white ring-1 ring-gray-100/50 bg-gray-900 aspect-video">
-              <video
-                className="w-full h-full object-cover opacity-90"
-                autoPlay
-                muted
-                loop
-                playsInline
-                poster="/assets/system_showcase_1.png"
-              >
-                <source src="/assets/demo_video.mp4" type="video/mp4" />
-                {/* Fallback para imagem caso o vídeo falhe ou não exista */}
-                <img
-                  src="/assets/2.jpg"
-                  alt="Demonstração do Sistema WeddingFin"
-                  className="w-full h-full object-cover"
-                />
-              </video>
+          <div className="max-w-5xl mx-auto mb-16 md:mb-20 animate-fade-in-up relative px-2 md:px-0">
+            {/* Moldura Decorativa */}
+            <div className="relative bg-[#FDFBF7] p-3 md:p-6 rounded-[24px] md:rounded-[40px] shadow-2xl border border-gray-200">
 
-              {/* Overlay sutil para integração visual */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+              {/* Logo WF no canto superior esquerdo */}
+              <div className="absolute -top-3 -left-2 md:-top-5 md:-left-6 z-20">
+                <div className="w-12 h-12 md:w-20 md:h-20 bg-white rounded-full shadow-lg flex items-center justify-center p-2 transform -rotate-12 border border-purple-50">
+                  <span className="font-serif font-bold text-xl md:text-3xl text-purple-900">WF</span>
+                </div>
+              </div>
+
+
+              <div className="relative rounded-2xl md:rounded-[32px] overflow-hidden shadow-inner ring-1 ring-gray-200 bg-gray-900 aspect-video">
+                <iframe
+                  className="w-full h-full object-cover"
+                  src="https://www.youtube.com/embed/tGLgEoExygc?rel=0"
+                  title="WeddingFin: Demonstração Completa - Organize as Finanças do Seu Casamento Sem Estresse"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              </div>
             </div>
           </div>
 
