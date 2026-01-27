@@ -180,7 +180,7 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-white overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="flex flex-col lg:flex-row items-start lg:items-center gap-10 md:gap-12">
             <div className="lg:w-1/2 text-center lg:text-left">
@@ -192,9 +192,9 @@ const App: React.FC = () => {
                   Você deveria estar provando doces ou escolhendo músicas, mas está perdido em <strong className="text-purple-900">planilhas que não batem</strong> e com medo de estourar o orçamento.
                 </p>
 
-                <div className="bg-red-50 border border-red-100 rounded-xl p-4 flex items-start gap-3 animate-fade-in-up">
-                  <div className="bg-red-100 p-1.5 rounded-full text-red-600 flex-shrink-0 mt-0.5">
-                    <ShieldCheck size={18} />
+                <div className="bg-red-50 border border-red-100 rounded-xl p-3 md:p-4 flex items-start gap-2 md:gap-3 animate-fade-in-up">
+                  <div className="bg-red-100 p-1 md:p-1.5 rounded-full text-red-600 flex-shrink-0 mt-0.5">
+                    <ShieldCheck size={16} className="md:w-[18px] md:h-[18px]" />
                   </div>
                   <p className="text-gray-800 text-sm md:text-base leading-tight">
                     <strong>A culpa não é de vocês.</strong> O problema são ferramentas antigas e manuais que geram insegurança.
@@ -202,15 +202,15 @@ const App: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="lg:w-1/2 w-full flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 -mx-4 px-4 md:flex-col md:overflow-visible md:pb-0 md:mx-0 md:px-0 md:gap-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="lg:w-1/2 w-full flex overflow-x-auto snap-x snap-mandatory scroll-pl-4 gap-3 md:gap-6 pb-4 -mx-4 px-4 md:flex-col md:overflow-visible md:pb-0 md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               {PAIN_POINTS.map((pain, index) => (
-                <div key={index} className="min-w-[85%] md:min-w-0 flex-shrink-0 snap-center flex flex-col sm:flex-row gap-4 p-5 md:p-6 rounded-2xl bg-red-50/50 border border-red-100 hover:bg-red-50 transition-colors">
+                <div key={index} className="min-w-[260px] sm:min-w-[300px] md:min-w-0 flex-shrink-0 snap-start flex flex-col sm:flex-row gap-3 md:gap-4 p-4 md:p-6 rounded-2xl bg-red-50/50 border border-red-100 hover:bg-red-50 transition-colors">
                   <div className="flex-shrink-0 flex justify-center sm:justify-start">
-                    <pain.icon className="text-red-500" size={28} />
+                    <pain.icon className="text-red-500 w-6 h-6 md:w-7 md:h-7" />
                   </div>
                   <div className="text-center sm:text-left">
-                    <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1 md:mb-2">{pain.title}</h3>
-                    <p className="text-sm md:text-base text-gray-600 leading-relaxed">{pain.description}</p>
+                    <h3 className="text-base md:text-xl font-bold text-gray-900 mb-1 md:mb-2">{pain.title}</h3>
+                    <p className="text-xs md:text-base text-gray-600 leading-relaxed">{pain.description}</p>
                   </div>
                 </div>
               ))}
@@ -250,23 +250,23 @@ const App: React.FC = () => {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-slate-50 relative overflow-hidden">
+      <section className="py-8 md:py-24 bg-slate-50 relative overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6">
-          <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold mb-4 md:mb-6">
+          <div className="text-center max-w-3xl mx-auto mb-6 md:mb-16">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold mb-3 md:mb-6">
               <CheckCircle size={14} /> A SOLUÇÃO DEFINITIVA
             </div>
-            <h2 className="text-2xl md:text-5xl font-bold text-gray-900 mb-4 md:mb-6">
+            <h2 className="text-xl md:text-5xl font-bold text-gray-900 mb-2 md:mb-6">
               Seu Assessor Financeiro Digital
             </h2>
-            <p className="text-base md:text-xl text-gray-600 leading-relaxed">
+            <p className="text-sm md:text-xl text-gray-600 leading-relaxed">
               O WeddingFin não é apenas uma plataforma visual bonita. É um sistema inteligente que entende como casamentos funcionam, trazendo paz de espírito para os noivos.
             </p>
           </div>
 
-          <div className="max-w-5xl mx-auto mb-16 md:mb-20 animate-fade-in-up relative px-2 md:px-0">
+          <div className="max-w-5xl mx-auto mb-8 md:mb-20 animate-fade-in-up relative px-0 md:px-0">
             {/* Moldura Decorativa */}
-            <div className="relative bg-[#FDFBF7] p-3 md:p-6 rounded-[24px] md:rounded-[40px] shadow-2xl border border-gray-200">
+            <div className="relative bg-[#FDFBF7] p-1.5 md:p-6 rounded-[24px] md:rounded-[40px] shadow-2xl border border-gray-200">
 
               {/* Logo WF no canto superior esquerdo */}
               <div className="absolute -top-3 -left-2 md:-top-5 md:-left-6 z-20">
