@@ -158,7 +158,7 @@ const App: React.FC = () => {
             <span className="block mt-4 font-semibold text-white">Simples, visual e automático. Para que vocês só se preocupem em dizer 'Sim'.</span>
           </p>
 
-          <div className="relative w-full max-w-4xl mx-auto rounded-2xl shadow-2xl overflow-hidden border-4 border-white/20 mb-10 group cursor-pointer animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+          {/* <div className="relative w-full max-w-4xl mx-auto rounded-2xl shadow-2xl overflow-hidden border-4 border-white/20 mb-10 group cursor-pointer animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors z-10 flex items-center justify-center">
               <div className="w-16 h-16 md:w-24 md:h-24 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center pl-1 group-hover:scale-110 transition-transform duration-300">
                 <div className="w-12 h-12 md:w-16 md:h-16 bg-white rounded-full flex items-center justify-center shadow-lg text-purple-600">
@@ -170,7 +170,7 @@ const App: React.FC = () => {
             <div className="absolute bottom-4 left-0 right-0 text-center z-20">
               <span className="inline-block px-4 py-1 bg-black/60 backdrop-blur text-white text-sm font-medium rounded-full">Assistir à Apresentação</span>
             </div>
-          </div>
+          </div> */}
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
             <Button onClick={scrollToCheckout} pulsing className="w-full sm:w-auto px-6 py-4 md:px-10 md:py-5">
