@@ -8,16 +8,16 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   pulsing?: boolean;
 }
 
-export const Button: React.FC<ButtonProps> = ({ 
-  children, 
-  variant = 'primary', 
-  fullWidth = false, 
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  variant = 'primary',
+  fullWidth = false,
   pulsing = false,
   className = '',
-  ...props 
+  ...props
 }) => {
   const baseStyles = "font-bold py-3 px-6 md:py-4 md:px-8 rounded-full transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg text-base md:text-lg flex items-center justify-center gap-2";
-  
+
   const variants = {
     primary: "bg-pink-500 hover:bg-pink-600 text-white shadow-pink-500/30 hover:shadow-pink-500/50 hover:shadow-2xl",
     secondary: "bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:shadow-2xl",
@@ -28,7 +28,7 @@ export const Button: React.FC<ButtonProps> = ({
   const pulseClass = pulsing ? "animate-pulse-slow hover:animate-none" : "";
 
   return (
-    <button 
+    <button
       className={`${baseStyles} ${variants[variant]} ${widthClass} ${pulseClass} ${className}`}
       {...props}
     >
@@ -44,12 +44,12 @@ interface FeatureCardProps {
 }
 
 export const FeatureCard: React.FC<FeatureCardProps> = ({ icon: Icon, title, description }) => (
-  <div className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300 border border-gray-100 flex flex-col items-center text-center h-full">
-    <div className="bg-purple-100 p-4 rounded-full mb-4 text-purple-700">
-      <Icon size={32} strokeWidth={1.5} />
+  <div className="bg-white p-4 md:p-10 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100 flex flex-col items-center text-center h-full hover:-translate-y-1">
+    <div className="bg-purple-100 p-3 md:p-5 rounded-full mb-3 md:mb-6 text-purple-700">
+      <Icon className="w-6 h-6 md:w-12 md:h-12" strokeWidth={1.5} />
     </div>
-    <h3 className="text-xl font-bold text-gray-800 mb-2">{title}</h3>
-    <p className="text-gray-600 leading-relaxed text-sm md:text-base">{description}</p>
+    <h3 className="text-base md:text-2xl font-bold text-gray-800 mb-2">{title}</h3>
+    <p className="text-gray-600 leading-relaxed text-xs md:text-base">{description}</p>
   </div>
 );
 
@@ -75,9 +75,8 @@ export const AccordionItem: React.FC<AccordionItemProps> = ({ question, answer, 
         </span>
       </button>
       <div
-        className={`overflow-hidden transition-all duration-300 ease-in-out ${
-          isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-        }`}
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          }`}
       >
         <div className="p-4 text-sm md:text-base text-gray-600 bg-gray-50 rounded-b-lg">
           {answer}

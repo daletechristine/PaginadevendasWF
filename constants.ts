@@ -1,7 +1,7 @@
 
 import { Calculator, Users, Calendar, PieChart, AlertCircle, XCircle } from 'lucide-react';
 
-export const CHECKOUT_URL = "https://pay.cakto.com.br/349d2dx";
+export const CHECKOUT_URL = "https://pay.cakto.com.br/djkbki5_681538";
 export const LOGO_URL = "https://asewgzajgpbhptgcuwan.supabase.co/storage/v1/object/public/WeddingFin%20-%20Imagens/Design%20sem%20nome%20(8).png";
 export const CREATORS_IMAGE_URL = "https://asewgzajgpbhptgcuwan.supabase.co/storage/v1/object/public/WeddingFin%20-%20Imagens/photo_2026-01-11_12-41-41.jpg";
 
@@ -11,18 +11,18 @@ export const WHATSAPP_LINK = `https://wa.me/${CONTACT_WHATSAPP}`;
 
 export const PAIN_POINTS = [
   {
-    title: "Planilhas Quebradas",
-    description: "Você tenta somar o orçamento e a fórmula quebra. A planilha trava e você perde horas arrumando células.",
+    title: "Planilhas travam.",
+    description: "Você tenta somar e a fórmula quebra. O tempo que deveria ser do casal é desperdiçado arrumando células.",
     icon: XCircle,
   },
   {
-    title: "Descontrole Financeiro",
-    description: "Sem saber exatamente quanto já gastou, o risco de estourar o orçamento e começar a vida a dois no vermelho é real.",
+    title: "O dinheiro some.",
+    description: "Sem controle visual, você não vê para onde o orçamento vai e o risco de começar a vida a dois no vermelho aumenta.",
     icon: AlertCircle,
   },
   {
-    title: "Stress e Brigas",
-    description: "A falta de clareza gera discussões desnecessárias. O planejamento vira um fardo em vez de um sonho.",
+    title: "O clima pesa.",
+    description: "A incerteza financeira gera discussões desnecessárias que transformam o sonho do casamento em um pesadelo.",
     icon: XCircle,
   },
 ];
