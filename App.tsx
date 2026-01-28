@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
+import { trackEvent } from './utils/analytics';
 import {
   CheckCircle,
   Star,
@@ -85,6 +86,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    trackEvent('page_view', { page_title: view });
   }, [view]);
 
   useEffect(() => {
@@ -106,19 +108,27 @@ const App: React.FC = () => {
   };
 
   const scrollToCheckout = () => {
+    trackEvent('click_cta', { event_category: 'navigation', event_label: 'scroll_to_checkout' });
     if (view !== 'home') {
       setView('home');
       setTimeout(() => {
         const element = document.getElementById('pricing');
-        if (element) element.scrollIntoView({ behavior: 'smooth' });
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+          trackEvent('view_pricing', { event_category: 'engagement', event_label: 'scroll' });
+        }
       }, 100);
     } else {
       const element = document.getElementById('pricing');
-      if (element) element.scrollIntoView({ behavior: 'smooth' });
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+        trackEvent('view_pricing', { event_category: 'engagement', event_label: 'scroll' });
+      }
     }
   };
 
   const handleCheckout = () => {
+    trackEvent('begin_checkout', { event_category: 'ecommerce', event_label: 'main_checkout_button' });
     if (CHECKOUT_URL) {
       window.open(CHECKOUT_URL, '_blank');
     }
@@ -130,6 +140,7 @@ const App: React.FC = () => {
 
     const encodedText = encodeURIComponent(userQuestion);
     const whatsappUrl = `https://wa.me/${CONTACT_WHATSAPP}?text=${encodedText}`;
+    trackEvent('contact_whatsapp', { event_category: 'contact', event_label: 'chat_widget' });
     window.open(whatsappUrl, '_blank');
     setIsChatOpen(false);
     setUserQuestion('');
@@ -721,7 +732,11 @@ const App: React.FC = () => {
             </div>
             <div className="p-6 space-y-4">
               <button
-                onClick={() => { setIsContactModalOpen(false); setIsChatOpen(true); }}
+                onClick={() => {
+                  setIsContactModalOpen(false);
+                  setIsChatOpen(true);
+                  trackEvent('click_whatsapp', { event_category: 'contact', event_label: 'modal_button' });
+                }}
                 className="w-full flex items-center justify-between p-4 bg-emerald-50 hover:bg-emerald-100 border border-emerald-100 rounded-2xl transition-all group"
               >
                 <div className="flex items-center gap-4">

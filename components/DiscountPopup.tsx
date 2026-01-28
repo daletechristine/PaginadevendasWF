@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Timer, Tag, Sparkles } from 'lucide-react';
+import { trackEvent } from '../utils/analytics';
 import { CHECKOUT_URL } from '../constants';
 
 export const DiscountPopup = () => {
@@ -20,10 +21,11 @@ export const DiscountPopup = () => {
                     hasTriggered.current = true; // Mark as triggered so we don't restart logic
                     console.log("Usuário visualizou o preço. Iniciando contagem de hesitação...");
 
-                    // Wait 4 seconds after seeing price to show popup (Simulating hesitation)
+                    // Wait 15 seconds after seeing price to show popup (Simulating hesitation)
                     setTimeout(() => {
                         setIsOpen(true);
-                    }, 4000);
+                        trackEvent('view_popup', { event_category: 'retention', event_label: 'discount_popup' });
+                    }, 15000);
                 }
             });
         }, { threshold: 0.3 }); // Trigger when 30% of pricing is visible
@@ -51,6 +53,7 @@ export const DiscountPopup = () => {
     const handleClaim = () => {
         const separator = CHECKOUT_URL.includes('?') ? '&' : '?';
         const couponUrl = `${CHECKOUT_URL}${separator}coupon=agoravai`;
+        trackEvent('claim_discount', { event_category: 'ecommerce', event_label: 'coupon_agoravai' });
         window.open(couponUrl, '_blank');
         setIsOpen(false);
     };
