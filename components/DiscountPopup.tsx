@@ -12,11 +12,7 @@ export const DiscountPopup = () => {
         // Smart Trigger: Only start the timer when the user sees the PRICING section
         const pricingSection = document.getElementById('pricing');
 
-        if (!pricingSection) {
-            // Fallback: If no pricing section found, use old timer (45s on page)
-            const fallbackTimer = setTimeout(() => setIsOpen(true), 45000);
-            return () => clearTimeout(fallbackTimer);
-        }
+        if (!pricingSection) return;
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
@@ -24,10 +20,10 @@ export const DiscountPopup = () => {
                     hasTriggered.current = true; // Mark as triggered so we don't restart logic
                     console.log("Usuário visualizou o preço. Iniciando contagem de hesitação...");
 
-                    // Wait 15 seconds after seeing price to show popup (Simulating hesitation)
+                    // Wait 4 seconds after seeing price to show popup (Simulating hesitation)
                     setTimeout(() => {
                         setIsOpen(true);
-                    }, 15000);
+                    }, 4000);
                 }
             });
         }, { threshold: 0.3 }); // Trigger when 30% of pricing is visible

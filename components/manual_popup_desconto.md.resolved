@@ -11,16 +11,16 @@ Diferente de popups comuns que aparecem assim que você entra no site (e irritam
 ### O Gatilho (Trigger)
 O sistema monitora silenciosamente a navegação do usuário. A lógica é a seguinte:
 1.  **Observador (`IntersectionObserver`):** O código fica "vigilante", aguardando o usuário rolar a página até a seção de **Preços** (`#pricing`).
-2.  **Detecção de Interesse:** Se o usuário chegou até o preço, assumimos que ele tem interesse real.
-3.  **Contagem de Hesitação:** Assim que a seção de preço aparece na tela, um cronômetro invisível de **15 segundos** é iniciado.
-4.  **Ação:** Se o usuário permanecer na página por 15 segundos após ver o preço (sem comprar), o sistema entende que ele está "pensando" ou "hesitando" e exibe o popup.
+2. **Detecção de Interesse:** Se o usuário chegou até o preço, assumimos que ele tem interesse real.
+3. **Contagem de Hesitação:** Assim que a seção de preço aparece na tela, um cronômetro invisível de **4 segundos** é iniciado.
+4. **Ação:** Se o usuário permanecer na página por 4 segundos após ver o preço (sem comprar), o sistema entende que ele está "pensando" ou "hesitando" e exibe o popup.
 
 **Arquivo do Código:** [src/components/DiscountPopup.tsx](file:///c:/APLICATIVOS%20ANTIGRAVITY/copy-of-weddingfin-landing-page-%28produ%C3%A7%C3%A3o%29%20%285%29/src/components/DiscountPopup.tsx)
 
 ## 3. Por Que e Qual a Razão? (Estratégia de Vendas)
 
 ### A. Psicologia da Hesitação
-Quando um cliente olha o preço e não compra imediatamente, ele está fazendo um cálculo mental de "Custo x Benefício". Nesses 15 segundos, ele está decidindo se vale a pena.
+Quando um cliente olha o preço e não compra imediatamente, ele está fazendo um cálculo mental de "Custo x Benefício". Nesses 4 segundos, ele está decidindo se vale a pena.
 *   **Razão:** O popup entra exatamente nesse momento crítico para "empurrar" a decisão a favor da compra, oferecendo um benefício extra (o desconto) que desequilibra a balança a favor do "SIM".
 
 ### B. Evitar a "Cegueira de Banner"
