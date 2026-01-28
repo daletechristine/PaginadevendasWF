@@ -6,7 +6,7 @@ import { CHECKOUT_URL } from '../constants';
 
 export const DiscountPopup = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [timeLeft, setTimeLeft] = useState(900); // 15 minutes
+    const [timeLeft, setTimeLeft] = useState(300); // 5 minutes
     const hasTriggered = useRef(false);
 
     useEffect(() => {
