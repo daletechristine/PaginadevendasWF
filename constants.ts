@@ -6,7 +6,7 @@ export const LOGO_URL = "https://asewgzajgpbhptgcuwan.supabase.co/storage/v1/obj
 export const CREATORS_IMAGE_URL = "https://asewgzajgpbhptgcuwan.supabase.co/storage/v1/object/public/WeddingFin%20-%20Imagens/photo_2026-01-11_12-41-41.jpg";
 
 export const CONTACT_EMAIL = "suporte.weddingfin@gmail.com";
-export const CONTACT_WHATSAPP = "5565981062465"; // Formato para link: +55 65 98106-2465
+export const CONTACT_WHATSAPP = "5565992807394"; // Formato para link: +55 65 99280-7394
 export const WHATSAPP_LINK = `https://wa.me/${CONTACT_WHATSAPP}`;
 
 export const PAIN_POINTS = [
