@@ -84,18 +84,31 @@ const App: React.FC = () => {
   const [userQuestion, setUserQuestion] = useState('');
   const chatInputRef = useRef<HTMLInputElement>(null);
 
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [showRestOfPage, setShowRestOfPage] = useState(false);
+
+  const handlePlayVideo = () => {
+    setIsVideoPlaying(true);
+    trackEvent('play_video', { event_category: 'engagement', event_label: 'main_vsl' });
+    setTimeout(() => {
+      setShowRestOfPage(true);
+      trackEvent('show_pitch', { event_category: 'engagement', event_label: 'vsl_delay' });
+    }, 5000); // 5 segundos
+  };
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     trackEvent('page_view', { page_title: view });
   }, [view]);
 
   useEffect(() => {
+    if (view === 'home' && !showRestOfPage) return;
     const timer = setTimeout(() => {
       setShouldPulse(true);
       setIsChatOpen(true);
     }, 5000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [view, showRestOfPage]);
 
   useEffect(() => {
     if (isChatOpen) {
@@ -171,421 +184,443 @@ const App: React.FC = () => {
             Tenha controle total em um painel visual e automático. Saiba para onde vai cada centavo e acompanhe seus gastos em tempo real, sem planilhas complexas.
           </p>
 
-          {/* <div className="relative w-full max-w-4xl mx-auto rounded-2xl shadow-2xl overflow-hidden border-4 border-white/20 mb-10 group cursor-pointer animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors z-10 flex items-center justify-center">
-              <div className="w-16 h-16 md:w-24 md:h-24 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center pl-1 group-hover:scale-110 transition-transform duration-300">
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-white rounded-full flex items-center justify-center shadow-lg text-purple-600">
-                  <Play size={32} className="fill-current" />
-                </div>
+          <div className="relative w-full max-w-4xl mx-auto mb-8 md:mb-10 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+            {!isVideoPlaying ? (
+              <div
+                className="relative cursor-pointer group w-full"
+                onClick={handlePlayVideo}
+              >
+                <img src={VSL_THUMBNAIL_URL} alt="Vídeo de Apresentação" className="w-full h-auto drop-shadow-2xl rounded-2xl md:rounded-[2rem] ring-4 ring-white/10" />
+                <div className="absolute inset-0 bg-transparent group-hover:bg-white/5 transition-colors z-10 rounded-[2rem] sm:rounded-[3rem] md:rounded-[4rem]"></div>
               </div>
-            </div>
-            <img src={VSL_THUMBNAIL_URL} alt="Vídeo de Apresentação" className="w-full aspect-video object-cover" />
-            <div className="absolute bottom-4 left-0 right-0 text-center z-20">
-              <span className="inline-block px-4 py-1 bg-black/60 backdrop-blur text-white text-sm font-medium rounded-full">Assistir à Apresentação</span>
-            </div>
-          </div> */}
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-            <Button onClick={scrollToCheckout} pulsing className="w-full sm:w-auto px-6 py-4 md:px-10 md:py-5">
-              SIM! QUERO ECONOMIZAR NO MEU CASAMENTO
-              <ArrowRight size={20} className="hidden sm:block" />
-            </Button>
-          </div>
-        </div>
-      </header>
-
-      <section className="py-16 md:py-24 bg-white overflow-hidden">
-        <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6">
-          <div className="text-center max-w-3xl mx-auto mb-8 md:mb-10">
-            <h2 className="text-2xl md:text-5xl font-bold text-gray-900 mb-4 md:mb-6 leading-tight">
-              Quem disse que planejar precisa ser um pesadelo?
-            </h2>
-            <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
-              Você deveria estar provando doces ou escolhendo músicas, mas está perdido em <strong className="text-purple-900">planilhas que não batem</strong> e com medo de estourar o orçamento.
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-3 max-w-2xl mx-auto">
-            <div className="bg-white border border-gray-100 rounded-xl p-3 md:p-4 flex items-start gap-3 text-left w-full shadow-sm">
-              <div className="bg-red-100 p-1.5 rounded-full text-red-600 flex-shrink-0 mt-0.5">
-                <ShieldCheck size={18} />
-              </div>
-              <p className="text-gray-800 text-sm md:text-base leading-tight">
-                <strong>A culpa não é de vocês.</strong> O problema são ferramentas antigas e manuais que geram insegurança.
-              </p>
-            </div>
-
-            {PAIN_POINTS.map((pain, index) => (
-              <ScrollReveal key={index} delay={index * 100}>
-                <div className="bg-white border border-gray-100 rounded-xl p-3 md:p-4 flex items-start gap-3 text-left shadow-sm hover:shadow-md transition-all duration-300 w-full">
-                  <div className="bg-red-100 p-1.5 rounded-full text-red-600 flex-shrink-0 mt-0.5">
-                    <pain.icon size={18} />
-                  </div>
-                  <p className="text-gray-800 text-sm md:text-base leading-tight">
-                    <strong>{pain.title}</strong> {pain.description}
-                  </p>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 md:py-24 px-4 md:px-8 bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white overflow-hidden">
-        <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
-          <div className="flex justify-center order-first lg:order-none relative">
-            <div className="relative group w-full max-w-[320px] md:max-w-[380px]">
-              {/* Moldura mais comportada - sem blur exagerado */}
-              <div className="absolute -inset-2 bg-white/10 rounded-2xl blur-sm transition-colors duration-500"></div>
-              {/* Card Reto e Elegante */}
-              <div className="relative bg-white p-2 md:p-3 rounded-2xl shadow-2xl transition-transform duration-500 ease-out">
-                <img src={CREATORS_IMAGE_URL} alt="Leandro e Dálete" loading="lazy" className="w-full rounded-xl object-cover aspect-[3/4] filter grayscale-[0.1] group-hover:grayscale-0 transition-all duration-500" />
-                <div className="absolute bottom-4 left-4 right-4 p-3 md:p-4 bg-black/60 backdrop-blur-md rounded-lg border border-white/10">
-                  <p className="text-[10px] md:text-xs font-medium tracking-widest uppercase text-white/90">Os Fundadores</p>
-                  <p className="text-base md:text-xl font-bold text-white">Leandro & Dálete</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="text-center lg:text-left">
-            <h2 className="text-3xl md:text-[2.5rem] font-bold mb-4 md:mb-6 text-white drop-shadow-md">Conheça os Criadores</h2>
-            <div className="space-y-4 text-white/95 text-sm md:text-lg leading-relaxed md:leading-[1.8]">
-              <p className="mb-4">
-                Olá! Somos <strong>Leandro e Dálete</strong>. Sabemos que por trás de cada "Sim" existem centenas de decisões financeiras importantes. O WeddingFin nasceu da nossa vontade de ter controle total sobre cada centavo investido no nosso sonho.
-              </p>
-              <p className="mb-4">
-                Criamos este aplicativo para substituir o estresse das planilhas manuais por gráficos inteligentes. Aqui, ajudamos você a organizar cada fornecedor e a visualizar o fluxo das parcelas mês a mês.
-              </p>
-              <p className="mt-8 italic text-xl md:text-2xl text-white/90 font-serif border-l-4 border-white/30 pl-4">
-                Sejam bem-vindos ao WeddingFin.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-8 md:py-24 bg-slate-50 relative overflow-hidden">
-        <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6">
-          <div className="text-center max-w-3xl mx-auto mb-6 md:mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold mb-3 md:mb-6">
-              <CheckCircle size={14} /> A SOLUÇÃO DEFINITIVA
-            </div>
-            <h2 className="text-xl md:text-5xl font-bold text-gray-900 mb-2 md:mb-6">
-              Seu Assessor Financeiro Digital
-            </h2>
-            <p className="text-sm md:text-xl text-gray-600 leading-relaxed">
-              O WeddingFin não é apenas uma plataforma visual bonita. É um sistema inteligente que entende como casamentos funcionam, trazendo paz de espírito para os noivos.
-            </p>
-          </div>
-
-          <div className="max-w-5xl mx-auto mb-8 md:mb-20 animate-fade-in-up relative px-0 md:px-0">
-            {/* Cinema Glow Effect */}
-            <div className="absolute -inset-4 bg-purple-600/30 blur-3xl rounded-full opacity-75 md:opacity-50 pointer-events-none"></div>
-
-            {/* Moldura Decorativa */}
-            <div className="relative rounded-2xl md:rounded-[32px] shadow-2xl">
-
-              {/* Logo WF no canto superior esquerdo */}
-              <div className="absolute -top-3 -left-2 md:-top-5 md:-left-6 z-20">
-                <div className="w-12 h-12 md:w-20 md:h-20 bg-white rounded-full shadow-lg flex items-center justify-center p-2 transform -rotate-12 border border-purple-50">
-                  <span className="font-serif font-bold text-xl md:text-3xl text-purple-900">WF</span>
-                </div>
-              </div>
-
-
-              <div className="relative rounded-2xl md:rounded-[32px] overflow-hidden shadow-inner ring-1 ring-gray-200 bg-gray-900 aspect-video">
+            ) : (
+              <div className="relative w-full aspect-video rounded-2xl shadow-2xl overflow-hidden ring-1 ring-white/20 bg-black">
                 <iframe
-                  className="w-full h-full object-cover"
-                  src="https://www.youtube.com/embed/tGLgEoExygc?rel=0"
-                  title="WeddingFin: Demonstração Completa - Organize as Finanças do Seu Casamento Sem Estresse"
+                  className="w-full h-full object-cover scale-[1.01]"
+                  src="https://www.youtube.com/embed/HZVc4d7GxsQ?rel=0&autoplay=1&controls=0&modestbranding=1&disablekb=1&fs=0&playsinline=1"
+                  title="WeddingFin: Vídeo de Apresentação"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 ></iframe>
               </div>
-            </div>
+            )}
           </div>
 
-          <div className="grid grid-cols-1 sm:flex sm:flex-wrap sm:justify-center gap-6 md:gap-8">
-            {FEATURES.map((feature, index) => (
-              <ScrollReveal key={index} delay={index * 150} className="sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)]">
-                <FeatureCard icon={feature.icon} title={feature.title} description={feature.description} />
-              </ScrollReveal>
-            ))}
-          </div>
+          {!isVideoPlaying && (
+            <div className="text-center animate-pulse -mt-4 mb-8 md:-mt-6 md:mb-10">
+              <p className="text-purple-200 text-sm md:text-base font-medium flex items-center justify-center gap-2">
+                &#9660; Clique no vídeo acima para entender como funciona &#9660;
+              </p>
+            </div>
+          )}
+
+          {showRestOfPage && (
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+              <Button onClick={scrollToCheckout} pulsing className="w-full sm:w-auto px-6 py-4 md:px-10 md:py-5">
+                SIM! QUERO ECONOMIZAR NO MEU CASAMENTO
+                <ArrowRight size={20} className="hidden sm:block" />
+              </Button>
+            </div>
+          )}
         </div>
-      </section>
+      </header>
 
-      <section className="py-12 md:py-20 bg-secondary/5 overflow-hidden">
-        <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6">
-          <div className="text-center max-w-3xl mx-auto mb-8 md:mb-12">
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">
-              Por dentro do WeddingFin
-            </h2>
-            <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
-              A única plataforma que une beleza e inteligência financeira.
-            </p>
-          </div>
+      {showRestOfPage && (
+        <>
+          <section className="py-16 md:py-24 bg-white overflow-hidden">
+            <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6">
+              <div className="text-center max-w-3xl mx-auto mb-8 md:mb-10">
+                <h2 className="text-2xl md:text-5xl font-bold text-gray-900 mb-4 md:mb-6 leading-tight">
+                  Quem disse que planejar precisa ser um pesadelo?
+                </h2>
+                <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
+                  Você deveria estar provando doces ou escolhendo músicas, mas está perdido em <strong className="text-purple-900">planilhas que não batem</strong> e com medo de estourar o orçamento.
+                </p>
+              </div>
 
-          <div className="space-y-12 md:space-y-24">
-            {/* Feature 1: Dashboard (Image Right) */}
-            <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-12">
-              <div className="lg:w-1/2 w-full order-1 lg:order-2 px-4 sm:px-0">
-                <div className="relative group perspective-1000">
-                  <div className="absolute -inset-4 bg-purple-200 rounded-[2rem] blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>
-                  {/* Navegador Frame */}
-                  <div className="relative bg-white rounded-xl md:rounded-2xl shadow-2xl border border-gray-200 overflow-hidden transform transition-transform duration-700 hover:rotate-y-2 hover:scale-[1.02]">
-                    <div className="h-6 md:h-8 bg-gray-50 border-b border-gray-100 flex items-center px-4 gap-2">
-                      <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-red-400"></div>
-                      <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-yellow-400"></div>
-                      <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-green-400"></div>
+              <div className="flex flex-col gap-3 max-w-2xl mx-auto">
+                <div className="bg-white border border-gray-100 rounded-xl p-3 md:p-4 flex items-start gap-3 text-left w-full shadow-sm">
+                  <div className="bg-red-100 p-1.5 rounded-full text-red-600 flex-shrink-0 mt-0.5">
+                    <ShieldCheck size={18} />
+                  </div>
+                  <p className="text-gray-800 text-sm md:text-base leading-tight">
+                    <strong>A culpa não é de vocês.</strong> O problema são ferramentas antigas e manuais que geram insegurança.
+                  </p>
+                </div>
+
+                {PAIN_POINTS.map((pain, index) => (
+                  <ScrollReveal key={index} delay={index * 100}>
+                    <div className="bg-white border border-gray-100 rounded-xl p-3 md:p-4 flex items-start gap-3 text-left shadow-sm hover:shadow-md transition-all duration-300 w-full">
+                      <div className="bg-red-100 p-1.5 rounded-full text-red-600 flex-shrink-0 mt-0.5">
+                        <pain.icon size={18} />
+                      </div>
+                      <p className="text-gray-800 text-sm md:text-base leading-tight">
+                        <strong>{pain.title}</strong> {pain.description}
+                      </p>
                     </div>
-                    <img
-                      src="/assets/3.jpg"
-                      alt="Dashboard do WeddingFin"
-                      className="w-full"
-                    />
+                  </ScrollReveal>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="py-16 md:py-24 px-4 md:px-8 bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white overflow-hidden">
+            <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
+              <div className="flex justify-center order-first lg:order-none relative">
+                <div className="relative group w-full max-w-[320px] md:max-w-[380px]">
+                  {/* Moldura mais comportada - sem blur exagerado */}
+                  <div className="absolute -inset-2 bg-white/10 rounded-2xl blur-sm transition-colors duration-500"></div>
+                  {/* Card Reto e Elegante */}
+                  <div className="relative bg-white p-2 md:p-3 rounded-2xl shadow-2xl transition-transform duration-500 ease-out">
+                    <img src={CREATORS_IMAGE_URL} alt="Leandro e Dálete" loading="lazy" className="w-full rounded-xl object-cover aspect-[3/4] filter grayscale-[0.1] group-hover:grayscale-0 transition-all duration-500" />
+                    <div className="absolute bottom-4 left-4 right-4 p-3 md:p-4 bg-black/60 backdrop-blur-md rounded-lg border border-white/10">
+                      <p className="text-[10px] md:text-xs font-medium tracking-widest uppercase text-white/90">Os Fundadores</p>
+                      <p className="text-base md:text-xl font-bold text-white">Leandro & Dálete</p>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="lg:w-1/2 text-left order-2 lg:order-1 relative z-10 -mt-3 lg:mt-0 px-4">
-                <div className="bg-white/90 backdrop-blur-sm lg:bg-transparent p-6 rounded-2xl shadow-xl lg:shadow-none border border-gray-100 lg:border-none">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-bold mb-4">
-                    <Star size={14} /> VISÃO GERAL
-                  </div>
-                  <h3 className="text-lg md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-4 md:mb-6">
-                    Controle Absoluto do seu Orçamento
-                  </h3>
-                  <p className="text-sm md:text-lg text-gray-600 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                    Saiba exatamente quanto já pagou, quanto falta e se está dentro da meta.
-                    Nosso dashboard inteligente atualiza tudo em tempo real, eliminando planilhas confusas.
+              <div className="text-center lg:text-left">
+                <h2 className="text-3xl md:text-[2.5rem] font-bold mb-4 md:mb-6 text-white drop-shadow-md">Conheça os Criadores</h2>
+                <div className="space-y-4 text-white/95 text-sm md:text-lg leading-relaxed md:leading-[1.8]">
+                  <p className="mb-4">
+                    Olá! Somos <strong>Leandro e Dálete</strong>. Sabemos que por trás de cada "Sim" existem centenas de decisões financeiras importantes. O WeddingFin nasceu da nossa vontade de ter controle total sobre cada centavo investido no nosso sonho.
                   </p>
-                  <div className="mt-8 flex flex-wrap gap-4 justify-center lg:justify-start">
-                    <div className="flex items-center gap-2 text-gray-700 font-medium">
-                      <CheckCircle size={18} className="text-green-500" /> Total Pago vs Pendente
-                    </div>
-                    <div className="flex items-center gap-2 text-gray-700 font-medium">
-                      <CheckCircle size={18} className="text-green-500" /> Gráficos Visuais
-                    </div>
-                  </div>
+                  <p className="mb-4">
+                    Criamos este aplicativo para substituir o estresse das planilhas manuais por gráficos inteligentes. Aqui, ajudamos você a organizar cada fornecedor e a visualizar o fluxo das parcelas mês a mês.
+                  </p>
+                  <p className="mt-8 italic text-xl md:text-2xl text-white/90 font-serif border-l-4 border-white/30 pl-4">
+                    Sejam bem-vindos ao WeddingFin.
+                  </p>
                 </div>
               </div>
             </div>
+          </section>
 
-            {/* Feature 2: Schedule (Image Left) */}
-            <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-12">
-              <div className="lg:w-1/2 w-full order-1 px-4 sm:px-0">
-                <div className="relative group perspective-1000">
-                  <div className="absolute -inset-4 bg-pink-200 rounded-[2rem] blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>
-                  {/* Navegador Frame */}
-                  <div className="relative bg-white rounded-xl md:rounded-2xl shadow-2xl border border-gray-200 overflow-hidden transform transition-transform duration-700 hover:-rotate-y-2 hover:scale-[1.02]">
-                    <div className="h-6 md:h-8 bg-gray-50 border-b border-gray-100 flex items-center px-4 gap-2">
-                      <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-red-400"></div>
-                      <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-yellow-400"></div>
-                      <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-green-400"></div>
-                    </div>
-                    <img
-                      src="/assets/6.jpg"
-                      alt="Cronograma de Pagamentos"
-                      className="w-full"
-                    />
-                  </div>
+          <section className="py-8 md:py-24 bg-slate-50 relative overflow-hidden">
+            <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6">
+              <div className="text-center max-w-3xl mx-auto mb-6 md:mb-16">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold mb-3 md:mb-6">
+                  <CheckCircle size={14} /> A SOLUÇÃO DEFINITIVA
                 </div>
+                <h2 className="text-xl md:text-5xl font-bold text-gray-900 mb-2 md:mb-6">
+                  Seu Assessor Financeiro Digital
+                </h2>
+                <p className="text-sm md:text-xl text-gray-600 leading-relaxed">
+                  O WeddingFin não é apenas uma plataforma visual bonita. É um sistema inteligente que entende como casamentos funcionam, trazendo paz de espírito para os noivos.
+                </p>
               </div>
-              <div className="lg:w-1/2 text-left order-2 relative z-10 -mt-3 lg:mt-0 px-4">
-                <div className="bg-white/90 backdrop-blur-sm lg:bg-transparent p-6 rounded-2xl shadow-xl lg:shadow-none border border-gray-100 lg:border-none">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-xs font-bold mb-4">
-                    <ShieldCheck size={14} /> TRANQUILIDADE
-                  </div>
-                  <h3 className="text-lg md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600 mb-4 md:mb-6">
-                    Nunca Mais Atrase um Boleto
-                  </h3>
-                  <p className="text-sm md:text-lg text-gray-600 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                    Visualize todas as suas parcelas mês a mês. O sistema organiza seus pagamentos
-                    em uma linha do tempo clara, para que vocês possam se planejar sem sustos.
-                  </p>
-                  <div className="mt-8 flex flex-wrap gap-4 justify-center lg:justify-start">
-                    <div className="flex items-center gap-2 text-gray-700 font-medium">
-                      <CheckCircle size={18} className="text-green-500" /> Linha do Tempo Visual
-                    </div>
-                    <div className="flex items-center gap-2 text-gray-700 font-medium">
-                      <CheckCircle size={18} className="text-green-500" /> Alertas de Vencimento
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            {/* Feature 3: Economy (Image Right) */}
-            <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-12">
-              <div className="lg:w-1/2 w-full order-1 lg:order-2 px-4 sm:px-0">
-                <div className="relative group perspective-1000">
-                  <div className="absolute -inset-4 bg-green-200 rounded-[2rem] blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>
-                  {/* Navegador Frame */}
-                  <div className="relative bg-white rounded-xl md:rounded-2xl shadow-2xl border border-gray-200 overflow-hidden transform transition-transform duration-700 hover:rotate-y-2 hover:scale-[1.02]">
-                    <div className="h-6 md:h-8 bg-gray-50 border-b border-gray-100 flex items-center px-4 gap-2">
-                      <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-red-400"></div>
-                      <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-yellow-400"></div>
-                      <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-green-400"></div>
+              <div className="max-w-5xl mx-auto mb-8 md:mb-20 animate-fade-in-up relative px-0 md:px-0">
+                {/* Cinema Glow Effect */}
+                <div className="absolute -inset-4 bg-purple-600/30 blur-3xl rounded-full opacity-75 md:opacity-50 pointer-events-none"></div>
+
+                {/* Moldura Decorativa */}
+                <div className="relative rounded-2xl md:rounded-[32px] shadow-2xl">
+
+                  {/* Logo WF no canto superior esquerdo */}
+                  <div className="absolute -top-3 -left-2 md:-top-5 md:-left-6 z-20">
+                    <div className="w-12 h-12 md:w-20 md:h-20 bg-white rounded-full shadow-lg flex items-center justify-center p-2 transform -rotate-12 border border-purple-50">
+                      <span className="font-serif font-bold text-xl md:text-3xl text-purple-900">WF</span>
                     </div>
-                    <img
-                      src="/assets/5.jpg"
-                      alt="Planejamento de Economia"
-                      className="w-full"
-                    />
+                  </div>
+
+
+                  <div className="relative rounded-2xl md:rounded-[32px] overflow-hidden shadow-inner ring-1 ring-gray-200 bg-gray-900 aspect-video">
+                    <iframe
+                      className="w-full h-full object-cover scale-[1.01]"
+                      src="https://www.youtube.com/embed/tGLgEoExygc?rel=0&controls=0&modestbranding=1&disablekb=1&fs=0&playsinline=1"
+                      title="WeddingFin: Demonstração Completa - Organize as Finanças do Seu Casamento Sem Estresse"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    ></iframe>
                   </div>
                 </div>
               </div>
-              <div className="lg:w-1/2 text-left order-2 lg:order-1 relative z-10 -mt-3 lg:mt-0 px-4">
-                <div className="bg-white/90 backdrop-blur-sm lg:bg-transparent p-6 rounded-2xl shadow-xl lg:shadow-none border border-gray-100 lg:border-none">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold mb-4">
-                    <Star size={14} /> METAS REAIS
-                  </div>
-                  <h3 className="text-lg md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-teal-600 mb-4 md:mb-6">
-                    Planejamento que Cabe no Bolso
-                  </h3>
-                  <p className="text-sm md:text-lg text-gray-600 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                    Defina metas de economia mensais e acompanhe seu progresso. O sistema ajuda
-                    a guardar o dinheiro necessário para realizar seu sonho sem dívidas.
-                  </p>
-                  <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-start lg:justify-start">
-                    <Button onClick={scrollToCheckout} pulsing className="px-8 py-3">
-                      QUERO MEU ACESSO AGORA
-                    </Button>
-                  </div>
-                </div>
+
+              <div className="grid grid-cols-1 sm:flex sm:flex-wrap sm:justify-center gap-6 md:gap-8">
+                {FEATURES.map((feature, index) => (
+                  <ScrollReveal key={index} delay={index * 150} className="sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)]">
+                    <FeatureCard icon={feature.icon} title={feature.title} description={feature.description} />
+                  </ScrollReveal>
+                ))}
               </div>
             </div>
+          </section>
 
-          </div>
-        </div>
-      </section>
+          <section className="py-12 md:py-20 bg-secondary/5 overflow-hidden">
+            <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6">
+              <div className="text-center max-w-3xl mx-auto mb-8 md:mb-12">
+                <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">
+                  Por dentro do WeddingFin
+                </h2>
+                <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
+                  A única plataforma que une beleza e inteligência financeira.
+                </p>
+              </div>
 
-
-
-      <section id="pricing" className="py-16 md:py-24 bg-purple-900 relative overflow-hidden flex items-center justify-center">
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
-        <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 relative z-10">
-          <div className="max-w-6xl mx-auto bg-white rounded-2xl md:rounded-3xl shadow-[0_0_60px_-15px_rgba(168,85,247,0.5)] overflow-hidden flex flex-col md:flex-row border border-purple-200 ring-4 ring-purple-500/20">
-            <div className="p-6 md:p-12 md:w-3/5 flex flex-col justify-center bg-white relative">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500"></div>
-              <h3 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-2 text-center md:text-left">O Método WeddingFin</h3>
-              <p className="text-gray-500 mb-6 text-center md:text-left">Tudo o que você precisa para assumir o controle.</p>
-
-              <div className="mb-6 md:mb-8 mx-auto md:mx-0">
-                <div className="flex items-center justify-between py-3 border-b border-gray-100">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-purple-50 p-1.5 rounded-full"><Star size={16} className="text-purple-600" /></div>
-                    <span className="font-bold text-gray-800 text-sm md:text-base">Acesso Vitalício ao Sistema</span>
-                  </div>
-                  <span className="text-gray-400 line-through text-xs md:text-sm">R$ 197,00</span>
-                </div>
-
-                {BONUSES.map((bonus, idx) => (
-                  <div key={idx} className="flex items-center justify-between py-3 border-b border-gray-50 last:border-0">
-                    <div className="flex items-center gap-3">
-                      <Gift size={16} className="text-green-500 flex-shrink-0" />
-                      <div>
-                        <p className="text-gray-600 text-sm">{bonus.title}</p>
+              <div className="space-y-12 md:space-y-24">
+                {/* Feature 1: Dashboard (Image Right) */}
+                <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-12">
+                  <div className="lg:w-1/2 w-full order-1 lg:order-2 px-4 sm:px-0">
+                    <div className="relative group perspective-1000">
+                      <div className="absolute -inset-4 bg-purple-200 rounded-[2rem] blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>
+                      {/* Navegador Frame */}
+                      <div className="relative bg-white rounded-xl md:rounded-2xl shadow-2xl border border-gray-200 overflow-hidden transform transition-transform duration-700 hover:rotate-y-2 hover:scale-[1.02]">
+                        <div className="h-6 md:h-8 bg-gray-50 border-b border-gray-100 flex items-center px-4 gap-2">
+                          <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-red-400"></div>
+                          <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-yellow-400"></div>
+                          <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-green-400"></div>
+                        </div>
+                        <img
+                          src="/assets/3.jpg"
+                          alt="Dashboard do WeddingFin"
+                          className="w-full"
+                        />
                       </div>
                     </div>
-                    <div className="text-right flex items-center gap-2">
-                      <span className="text-gray-300 line-through text-xs hidden sm:inline">{bonus.originalPrice}</span>
-                      <span className="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full uppercase tracking-wide">Grátis</span>
+                  </div>
+                  <div className="lg:w-1/2 text-left order-2 lg:order-1 relative z-10 -mt-3 lg:mt-0 px-4">
+                    <div className="bg-white/90 backdrop-blur-sm lg:bg-transparent p-6 rounded-2xl shadow-xl lg:shadow-none border border-gray-100 lg:border-none">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-bold mb-4">
+                        <Star size={14} /> VISÃO GERAL
+                      </div>
+                      <h3 className="text-lg md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-4 md:mb-6">
+                        Controle Absoluto do seu Orçamento
+                      </h3>
+                      <p className="text-sm md:text-lg text-gray-600 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                        Saiba exatamente quanto já pagou, quanto falta e se está dentro da meta.
+                        Nosso dashboard inteligente atualiza tudo em tempo real, eliminando planilhas confusas.
+                      </p>
+                      <div className="mt-8 flex flex-wrap gap-4 justify-center lg:justify-start">
+                        <div className="flex items-center gap-2 text-gray-700 font-medium">
+                          <CheckCircle size={18} className="text-green-500" /> Total Pago vs Pendente
+                        </div>
+                        <div className="flex items-center gap-2 text-gray-700 font-medium">
+                          <CheckCircle size={18} className="text-green-500" /> Gráficos Visuais
+                        </div>
+                      </div>
                     </div>
+                  </div>
+                </div>
+
+                {/* Feature 2: Schedule (Image Left) */}
+                <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-12">
+                  <div className="lg:w-1/2 w-full order-1 px-4 sm:px-0">
+                    <div className="relative group perspective-1000">
+                      <div className="absolute -inset-4 bg-pink-200 rounded-[2rem] blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>
+                      {/* Navegador Frame */}
+                      <div className="relative bg-white rounded-xl md:rounded-2xl shadow-2xl border border-gray-200 overflow-hidden transform transition-transform duration-700 hover:-rotate-y-2 hover:scale-[1.02]">
+                        <div className="h-6 md:h-8 bg-gray-50 border-b border-gray-100 flex items-center px-4 gap-2">
+                          <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-red-400"></div>
+                          <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-yellow-400"></div>
+                          <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-green-400"></div>
+                        </div>
+                        <img
+                          src="/assets/6.jpg"
+                          alt="Cronograma de Pagamentos"
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="lg:w-1/2 text-left order-2 relative z-10 -mt-3 lg:mt-0 px-4">
+                    <div className="bg-white/90 backdrop-blur-sm lg:bg-transparent p-6 rounded-2xl shadow-xl lg:shadow-none border border-gray-100 lg:border-none">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-xs font-bold mb-4">
+                        <ShieldCheck size={14} /> TRANQUILIDADE
+                      </div>
+                      <h3 className="text-lg md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600 mb-4 md:mb-6">
+                        Nunca Mais Atrase um Boleto
+                      </h3>
+                      <p className="text-sm md:text-lg text-gray-600 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                        Visualize todas as suas parcelas mês a mês. O sistema organiza seus pagamentos
+                        em uma linha do tempo clara, para que vocês possam se planejar sem sustos.
+                      </p>
+                      <div className="mt-8 flex flex-wrap gap-4 justify-center lg:justify-start">
+                        <div className="flex items-center gap-2 text-gray-700 font-medium">
+                          <CheckCircle size={18} className="text-green-500" /> Linha do Tempo Visual
+                        </div>
+                        <div className="flex items-center gap-2 text-gray-700 font-medium">
+                          <CheckCircle size={18} className="text-green-500" /> Alertas de Vencimento
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Feature 3: Economy (Image Right) */}
+                <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-12">
+                  <div className="lg:w-1/2 w-full order-1 lg:order-2 px-4 sm:px-0">
+                    <div className="relative group perspective-1000">
+                      <div className="absolute -inset-4 bg-green-200 rounded-[2rem] blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>
+                      {/* Navegador Frame */}
+                      <div className="relative bg-white rounded-xl md:rounded-2xl shadow-2xl border border-gray-200 overflow-hidden transform transition-transform duration-700 hover:rotate-y-2 hover:scale-[1.02]">
+                        <div className="h-6 md:h-8 bg-gray-50 border-b border-gray-100 flex items-center px-4 gap-2">
+                          <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-red-400"></div>
+                          <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-yellow-400"></div>
+                          <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-green-400"></div>
+                        </div>
+                        <img
+                          src="/assets/5.jpg"
+                          alt="Planejamento de Economia"
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="lg:w-1/2 text-left order-2 lg:order-1 relative z-10 -mt-3 lg:mt-0 px-4">
+                    <div className="bg-white/90 backdrop-blur-sm lg:bg-transparent p-6 rounded-2xl shadow-xl lg:shadow-none border border-gray-100 lg:border-none">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold mb-4">
+                        <Star size={14} /> METAS REAIS
+                      </div>
+                      <h3 className="text-lg md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-teal-600 mb-4 md:mb-6">
+                        Planejamento que Cabe no Bolso
+                      </h3>
+                      <p className="text-sm md:text-lg text-gray-600 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                        Defina metas de economia mensais e acompanhe seu progresso. O sistema ajuda
+                        a guardar o dinheiro necessário para realizar seu sonho sem dívidas.
+                      </p>
+                      <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-start lg:justify-start">
+                        <Button onClick={scrollToCheckout} pulsing className="px-8 py-3">
+                          QUERO MEU ACESSO AGORA
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </section>
+
+
+
+          <section id="pricing" className="py-16 md:py-24 bg-purple-900 relative overflow-hidden flex items-center justify-center">
+            <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
+            <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 relative z-10">
+              <div className="max-w-6xl mx-auto bg-white rounded-2xl md:rounded-3xl shadow-[0_0_60px_-15px_rgba(168,85,247,0.5)] overflow-hidden flex flex-col md:flex-row border border-purple-200 ring-4 ring-purple-500/20">
+                <div className="p-6 md:p-12 md:w-3/5 flex flex-col justify-center bg-white relative">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500"></div>
+                  <h3 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-2 text-center md:text-left">O Método WeddingFin</h3>
+                  <p className="text-gray-500 mb-6 text-center md:text-left">Tudo o que você precisa para assumir o controle.</p>
+
+                  <div className="mb-6 md:mb-8 mx-auto md:mx-0">
+                    <div className="flex items-center justify-between py-3 border-b border-gray-100">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-purple-50 p-1.5 rounded-full"><Star size={16} className="text-purple-600" /></div>
+                        <span className="font-bold text-gray-800 text-sm md:text-base">Acesso Vitalício ao Sistema</span>
+                      </div>
+                      <span className="text-gray-400 line-through text-xs md:text-sm">R$ 197,00</span>
+                    </div>
+
+                    {BONUSES.map((bonus, idx) => (
+                      <div key={idx} className="flex items-center justify-between py-3 border-b border-gray-50 last:border-0">
+                        <div className="flex items-center gap-3">
+                          <Gift size={16} className="text-green-500 flex-shrink-0" />
+                          <div>
+                            <p className="text-gray-600 text-sm">{bonus.title}</p>
+                          </div>
+                        </div>
+                        <div className="text-right flex items-center gap-2">
+                          <span className="text-gray-300 line-through text-xs hidden sm:inline">{bonus.originalPrice}</span>
+                          <span className="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full uppercase tracking-wide">Grátis</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex items-center justify-center md:justify-start gap-2 text-[10px] md:text-sm text-gray-500 mt-auto pt-6 border-t border-gray-100">
+                    <ShieldCheck size={16} className="text-purple-600" />
+                    <span>Compra 100% Segura • Garantia de 7 dias</span>
+                  </div>
+                </div>
+                <div className="bg-gray-50 p-8 md:p-12 md:w-2/5 flex flex-col items-center justify-center border-t md:border-t-0 md:border-l border-gray-100 relative">
+                  <div className="text-center mb-8 mt-2 w-full">
+                    <div className="inline-flex items-center gap-1.5 text-red-500 font-bold text-[10px] md:text-xs uppercase tracking-widest mb-4">
+                      <Timer size={14} />
+                      <span>Oferta por tempo limitado</span>
+                    </div>
+
+                    <p className="text-red-400 text-sm md:text-lg font-bold line-through mb-1 opacity-80">De R$ 197,00</p>
+                    <p className="text-purple-600 font-bold mb-1 uppercase tracking-wide text-[10px] md:text-xs">EM ATÉ 12X DE</p>
+
+                    <div className="flex items-start justify-center text-purple-900 leading-none mb-2">
+                      <span className="text-lg md:text-2xl font-bold mt-1 md:mt-4">R$</span>
+                      <span className="text-6xl md:text-8xl font-extrabold tracking-tighter">5,81</span>
+                    </div>
+
+                    <p className="text-gray-800 font-bold mt-2 text-sm md:text-base">
+                      ou R$ 49,90 à vista
+                    </p>
+                  </div>
+                  <Button fullWidth pulsing onClick={handleCheckout} className="shadow-xl py-4 md:py-6 text-base md:text-2xl bg-gradient-to-r from-pink-600 via-purple-600 to-pink-600 hover:from-pink-500 hover:via-purple-500 hover:to-pink-500 border-none ring-2 ring-purple-400/50">GARANTIR ACESSO AGORA</Button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="py-16 md:py-24 bg-white border-t border-gray-100">
+            <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6">
+              <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+                <h2 className="text-2xl md:text-5xl font-bold text-gray-900 mb-4 md:mb-6">
+                  O que os noivos estão dizendo?
+                </h2>
+                <p className="text-base md:text-xl text-gray-600 leading-relaxed">
+                  Junte-se a centenas de casais que já organizaram o casamento dos sonhos sem estresse financeiro.
+                </p>
+              </div>
+
+              <div className="flex overflow-x-auto snap-x snap-mandatory pb-8 gap-4 px-4 md:grid md:grid-cols-3 md:gap-8 md:overflow-visible md:px-0 scrollbar-hide -mx-4 md:mx-0">
+                {TESTIMONIALS.map((testimonial, index) => (
+                  <ScrollReveal key={index} delay={index * 150} className="min-w-[85%] md:min-w-0 snap-center">
+                    <div className="bg-white p-6 md:p-8 rounded-2xl shadow-[0_4px_20px_-12px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_-12px_rgba(124,58,237,0.3)] border border-purple-50/50 flex flex-col hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group h-full">
+                      {/* Aspas Decorativas */}
+                      <div className="absolute top-4 right-6 text-purple-50 group-hover:text-purple-100 transition-colors transform group-hover:scale-110 duration-500">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H15.017C14.4647 8 14.017 8.44772 14.017 9V11C14.017 11.5523 13.5693 12 13.017 12H12.017V5H22.017V15C22.017 18.3137 19.3307 21 16.017 21H14.017ZM5.0166 21L5.0166 18C5.0166 16.8954 5.91203 16 7.0166 16H10.0166C10.5689 16 11.0166 15.5523 11.0166 15V9C11.0166 8.44772 10.5689 8 10.0166 8H6.0166C5.46432 8 5.0166 8.44772 5.0166 9V11C5.0166 11.5523 4.56889 12 4.0166 12H3.0166V5H13.0166V15C13.0166 18.3137 10.3303 21 7.0166 21H5.0166Z" />
+                        </svg>
+                      </div>
+
+                      <div className="flex justify-between items-start mb-6 relative z-10">
+                        <div className="flex gap-1">
+                          {[...Array(testimonial.stars)].map((_, i) => (
+                            <Star key={i} size={16} className="text-yellow-400 fill-yellow-400" />
+                          ))}
+                        </div>
+                      </div>
+
+                      <p className="text-gray-600 italic mb-8 leading-relaxed flex-grow relative z-10 text-base">"{testimonial.content}"</p>
+                      <div className="flex items-center gap-4 mt-auto relative z-10">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-100 to-pink-100 border-2 border-white ring-2 ring-purple-50 flex items-center justify-center text-purple-700 font-bold shadow-sm">
+                          {testimonial.name.charAt(0)}
+                        </div>
+                        <div>
+                          <p className="font-bold text-gray-900 text-sm">{testimonial.name}</p>
+                          <p className="text-xs text-gray-500 font-medium">{testimonial.role}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </ScrollReveal>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="py-16 md:py-24 bg-gray-50">
+            <div className="container mx-auto px-4 sm:px-6 max-w-2xl">
+              <div className="text-center mb-10 md:mb-16">
+                <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4">Dúvidas Frequentes</h2>
+              </div>
+              <div className="space-y-3 md:space-y-4">
+                {FAQS.map((faq, index) => (
+                  <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <AccordionItem question={faq.question} answer={faq.answer} isOpen={openFaqIndex === index} onClick={() => toggleFaq(index)} />
                   </div>
                 ))}
               </div>
-              <div className="flex items-center justify-center md:justify-start gap-2 text-[10px] md:text-sm text-gray-500 mt-auto pt-6 border-t border-gray-100">
-                <ShieldCheck size={16} className="text-purple-600" />
-                <span>Compra 100% Segura • Garantia de 7 dias</span>
-              </div>
             </div>
-            <div className="bg-gray-50 p-8 md:p-12 md:w-2/5 flex flex-col items-center justify-center border-t md:border-t-0 md:border-l border-gray-100 relative">
-              <div className="text-center mb-8 mt-2 w-full">
-                <div className="inline-flex items-center gap-1.5 text-red-500 font-bold text-[10px] md:text-xs uppercase tracking-widest mb-4">
-                  <Timer size={14} />
-                  <span>Oferta por tempo limitado</span>
-                </div>
-
-                <p className="text-red-400 text-sm md:text-lg font-bold line-through mb-1 opacity-80">De R$ 197,00</p>
-                <p className="text-purple-600 font-bold mb-1 uppercase tracking-wide text-[10px] md:text-xs">EM ATÉ 12X DE</p>
-
-                <div className="flex items-start justify-center text-purple-900 leading-none mb-2">
-                  <span className="text-lg md:text-2xl font-bold mt-1 md:mt-4">R$</span>
-                  <span className="text-6xl md:text-8xl font-extrabold tracking-tighter">5,81</span>
-                </div>
-
-                <p className="text-gray-800 font-bold mt-2 text-sm md:text-base">
-                  ou R$ 49,90 à vista
-                </p>
-              </div>
-              <Button fullWidth pulsing onClick={handleCheckout} className="shadow-xl py-4 md:py-6 text-base md:text-2xl bg-gradient-to-r from-pink-600 via-purple-600 to-pink-600 hover:from-pink-500 hover:via-purple-500 hover:to-pink-500 border-none ring-2 ring-purple-400/50">GARANTIR ACESSO AGORA</Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 md:py-24 bg-white border-t border-gray-100">
-        <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6">
-          <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
-            <h2 className="text-2xl md:text-5xl font-bold text-gray-900 mb-4 md:mb-6">
-              O que os noivos estão dizendo?
-            </h2>
-            <p className="text-base md:text-xl text-gray-600 leading-relaxed">
-              Junte-se a centenas de casais que já organizaram o casamento dos sonhos sem estresse financeiro.
-            </p>
-          </div>
-
-          <div className="flex overflow-x-auto snap-x snap-mandatory pb-8 gap-4 px-4 md:grid md:grid-cols-3 md:gap-8 md:overflow-visible md:px-0 scrollbar-hide -mx-4 md:mx-0">
-            {TESTIMONIALS.map((testimonial, index) => (
-              <ScrollReveal key={index} delay={index * 150} className="min-w-[85%] md:min-w-0 snap-center">
-                <div className="bg-white p-6 md:p-8 rounded-2xl shadow-[0_4px_20px_-12px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_-12px_rgba(124,58,237,0.3)] border border-purple-50/50 flex flex-col hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group h-full">
-                  {/* Aspas Decorativas */}
-                  <div className="absolute top-4 right-6 text-purple-50 group-hover:text-purple-100 transition-colors transform group-hover:scale-110 duration-500">
-                    <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H15.017C14.4647 8 14.017 8.44772 14.017 9V11C14.017 11.5523 13.5693 12 13.017 12H12.017V5H22.017V15C22.017 18.3137 19.3307 21 16.017 21H14.017ZM5.0166 21L5.0166 18C5.0166 16.8954 5.91203 16 7.0166 16H10.0166C10.5689 16 11.0166 15.5523 11.0166 15V9C11.0166 8.44772 10.5689 8 10.0166 8H6.0166C5.46432 8 5.0166 8.44772 5.0166 9V11C5.0166 11.5523 4.56889 12 4.0166 12H3.0166V5H13.0166V15C13.0166 18.3137 10.3303 21 7.0166 21H5.0166Z" />
-                    </svg>
-                  </div>
-
-                  <div className="flex justify-between items-start mb-6 relative z-10">
-                    <div className="flex gap-1">
-                      {[...Array(testimonial.stars)].map((_, i) => (
-                        <Star key={i} size={16} className="text-yellow-400 fill-yellow-400" />
-                      ))}
-                    </div>
-                  </div>
-
-                  <p className="text-gray-600 italic mb-8 leading-relaxed flex-grow relative z-10 text-base">"{testimonial.content}"</p>
-                  <div className="flex items-center gap-4 mt-auto relative z-10">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-100 to-pink-100 border-2 border-white ring-2 ring-purple-50 flex items-center justify-center text-purple-700 font-bold shadow-sm">
-                      {testimonial.name.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-900 text-sm">{testimonial.name}</p>
-                      <p className="text-xs text-gray-500 font-medium">{testimonial.role}</p>
-                    </div>
-                  </div>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 md:py-24 bg-gray-50">
-        <div className="container mx-auto px-4 sm:px-6 max-w-2xl">
-          <div className="text-center mb-10 md:mb-16">
-            <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4">Dúvidas Frequentes</h2>
-          </div>
-          <div className="space-y-3 md:space-y-4">
-            {FAQS.map((faq, index) => (
-              <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <AccordionItem question={faq.question} answer={faq.answer} isOpen={openFaqIndex === index} onClick={() => toggleFaq(index)} />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+          </section>
+        </>
+      )}
     </>
   );
 
@@ -633,12 +668,14 @@ const App: React.FC = () => {
                 Início
               </button>
             )}
-            <button
-              onClick={scrollToCheckout}
-              className="bg-purple-600 text-white px-4 md:px-6 py-1.5 md:py-2 rounded-full font-bold hover:bg-purple-700 transition-all shadow-md hover:shadow-lg text-xs md:text-sm active:scale-95 whitespace-nowrap"
-            >
-              Começar Agora
-            </button>
+            {(showRestOfPage || view !== 'home') && (
+              <button
+                onClick={scrollToCheckout}
+                className="bg-purple-600 text-white px-4 md:px-6 py-1.5 md:py-2 rounded-full font-bold hover:bg-purple-700 transition-all shadow-md hover:shadow-lg text-xs md:text-sm active:scale-95 whitespace-nowrap"
+              >
+                Começar Agora
+              </button>
+            )}
           </div>
         </div>
       </nav>
@@ -649,142 +686,146 @@ const App: React.FC = () => {
         {view === 'terms' && renderLegal(TERMS_OF_USE_TEXT)}
       </main>
 
-      <div className="fixed bottom-6 right-6 z-[60] flex flex-col items-end gap-3">
-        {isChatOpen && (
-          <div className="bg-white w-[280px] md:w-[320px] rounded-[20px] shadow-[0_10px_35px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden animate-fade-in-up">
-            <div className="bg-[#25D366] px-5 py-3.5 text-white flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <WhatsAppIcon className="w-4 h-4" />
-                <p className="font-extrabold text-[12px] uppercase tracking-wider">Suporte Direto</p>
+      {(showRestOfPage || view !== 'home') && (
+        <>
+          <div className="fixed bottom-6 right-6 z-[60] flex flex-col items-end gap-3">
+            {isChatOpen && (
+              <div className="bg-white w-[280px] md:w-[320px] rounded-[20px] shadow-[0_10px_35px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden animate-fade-in-up">
+                <div className="bg-[#25D366] px-5 py-3.5 text-white flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <WhatsAppIcon className="w-4 h-4" />
+                    <p className="font-extrabold text-[12px] uppercase tracking-wider">Suporte Direto</p>
+                  </div>
+                  <button onClick={() => setIsChatOpen(false)} className="text-white/80 hover:text-white transition-colors">
+                    <X size={16} strokeWidth={3} />
+                  </button>
+                </div>
+
+                <div className="p-4 bg-white">
+                  <div className="bg-gray-50 rounded-xl p-3 mb-4">
+                    <p className="text-[12px] font-semibold text-gray-600 leading-snug">
+                      Olá! Como posso te ajudar com seu casamento hoje? 😊
+                    </p>
+                  </div>
+
+                  <form onSubmit={handleSendMessage} className="relative">
+                    <input
+                      ref={chatInputRef}
+                      type="text"
+                      value={userQuestion}
+                      onChange={(e) => setUserQuestion(e.target.value)}
+                      placeholder="Sua dúvida..."
+                      className="w-full bg-white border border-gray-200 rounded-xl pl-4 pr-10 py-3 text-[13px] font-medium text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-[#25D366] transition-all"
+                    />
+                    <button
+                      type="submit"
+                      disabled={!userQuestion.trim()}
+                      className="absolute right-1 top-1/2 -translate-y-1/2 text-[#25D366] p-2 disabled:opacity-0 transition-all hover:scale-110"
+                    >
+                      <Send size={18} strokeWidth={2.5} />
+                    </button>
+                  </form>
+                </div>
               </div>
-              <button onClick={() => setIsChatOpen(false)} className="text-white/80 hover:text-white transition-colors">
-                <X size={16} strokeWidth={3} />
-              </button>
-            </div>
+            )}
 
-            <div className="p-4 bg-white">
-              <div className="bg-gray-50 rounded-xl p-3 mb-4">
-                <p className="text-[12px] font-semibold text-gray-600 leading-snug">
-                  Olá! Como posso te ajudar com seu casamento hoje? 😊
-                </p>
-              </div>
-
-              <form onSubmit={handleSendMessage} className="relative">
-                <input
-                  ref={chatInputRef}
-                  type="text"
-                  value={userQuestion}
-                  onChange={(e) => setUserQuestion(e.target.value)}
-                  placeholder="Sua dúvida..."
-                  className="w-full bg-white border border-gray-200 rounded-xl pl-4 pr-10 py-3 text-[13px] font-medium text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-[#25D366] transition-all"
-                />
-                <button
-                  type="submit"
-                  disabled={!userQuestion.trim()}
-                  className="absolute right-1 top-1/2 -translate-y-1/2 text-[#25D366] p-2 disabled:opacity-0 transition-all hover:scale-110"
-                >
-                  <Send size={18} strokeWidth={2.5} />
-                </button>
-              </form>
-            </div>
-          </div>
-        )}
-
-        <button
-          onClick={() => setIsChatOpen(!isChatOpen)}
-          className={`
+            <button
+              onClick={() => setIsChatOpen(!isChatOpen)}
+              className={`
             w-14 h-14 md:w-16 md:h-16 flex items-center justify-center
             bg-[#25D366] text-white rounded-full shadow-[0_10px_30px_rgba(37,211,102,0.4)] 
             hover:scale-105 transition-all duration-300 active:scale-90 relative
             ${shouldPulse && !isChatOpen ? 'animate-pulse-slow' : ''}
             ${isChatOpen ? 'rotate-90 !bg-white !text-[#25D366] border border-gray-100 shadow-none' : ''}
           `}
-          aria-label="Falar com suporte"
-        >
-          {isChatOpen ? (
-            <X size={24} strokeWidth={3} />
-          ) : (
-            <WhatsAppIcon className="w-8 h-8" />
-          )}
+              aria-label="Falar com suporte"
+            >
+              {isChatOpen ? (
+                <X size={24} strokeWidth={3} />
+              ) : (
+                <WhatsAppIcon className="w-8 h-8" />
+              )}
 
-          {shouldPulse && !isChatOpen && (
-            <div className="absolute right-full mr-3 bg-white text-gray-900 px-3 py-1.5 rounded-lg shadow-lg border border-gray-50 text-[11px] font-black uppercase tracking-widest whitespace-nowrap animate-fade-in-up flex items-center gap-2">
-              <span className="w-1.5 h-1.5 bg-[#25D366] rounded-full animate-pulse"></span>
-              Alguma dúvida?
-            </div>
-          )}
-        </button>
-      </div>
+              {shouldPulse && !isChatOpen && (
+                <div className="absolute right-full mr-3 bg-white text-gray-900 px-3 py-1.5 rounded-lg shadow-lg border border-gray-50 text-[11px] font-black uppercase tracking-widest whitespace-nowrap animate-fade-in-up flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-[#25D366] rounded-full animate-pulse"></span>
+                  Alguma dúvida?
+                </div>
+              )}
+            </button>
+          </div>
 
-      {isContactModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsContactModalOpen(false)}></div>
-          <div className="relative bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in-up border border-purple-50">
-            <div className="bg-purple-600 p-8 text-white text-center">
-              <button onClick={() => setIsContactModalOpen(false)} className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors">
-                <X size={24} />
-              </button>
-              <div className="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-md">
-                <MessageCircle size={32} />
+          {isContactModalOpen && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+              <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsContactModalOpen(false)}></div>
+              <div className="relative bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in-up border border-purple-50">
+                <div className="bg-purple-600 p-8 text-white text-center">
+                  <button onClick={() => setIsContactModalOpen(false)} className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors">
+                    <X size={24} />
+                  </button>
+                  <div className="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-md">
+                    <MessageCircle size={32} />
+                  </div>
+                  <h2 className="text-2xl font-extrabold tracking-tight">Como podemos ajudar?</h2>
+                  <p className="text-purple-100 mt-2 font-medium">Escolha seu canal de preferência:</p>
+                </div>
+                <div className="p-6 space-y-4">
+                  <button
+                    onClick={() => {
+                      setIsContactModalOpen(false);
+                      setIsChatOpen(true);
+                      trackEvent('click_whatsapp', { event_category: 'contact', event_label: 'modal_button' });
+                    }}
+                    className="w-full flex items-center justify-between p-4 bg-emerald-50 hover:bg-emerald-100 border border-emerald-100 rounded-2xl transition-all group"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="bg-[#25D366] text-white p-3 rounded-xl"><WhatsAppIcon className="w-6 h-6" /></div>
+                      <div>
+                        <p className="font-bold text-gray-900">WhatsApp Oficial</p>
+                      </div>
+                    </div>
+                    <ChevronRight size={20} className="text-[#25D366] group-hover:translate-x-1 transition-transform" />
+                  </button>
+                  <a
+                    href={`mailto:${CONTACT_EMAIL}`}
+                    className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 border border-gray-100 rounded-2xl transition-all group"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="bg-gray-700 text-white p-3 rounded-xl"><Mail size={24} /></div>
+                      <div>
+                        <p className="font-bold text-gray-900">E-mail</p>
+                        <p className="text-xs text-gray-500">{CONTACT_EMAIL}</p>
+                      </div>
+                    </div>
+                    <ChevronRight size={20} className="text-gray-400 group-hover:translate-x-1 transition-transform" />
+                  </a>
+                </div>
+                <p className="text-center pb-6 text-[10px] text-gray-400 uppercase tracking-widest font-bold">Atendimento Seg-Sex, 8h às 18h</p>
               </div>
-              <h2 className="text-2xl font-extrabold tracking-tight">Como podemos ajudar?</h2>
-              <p className="text-purple-100 mt-2 font-medium">Escolha seu canal de preferência:</p>
             </div>
-            <div className="p-6 space-y-4">
-              <button
-                onClick={() => {
-                  setIsContactModalOpen(false);
-                  setIsChatOpen(true);
-                  trackEvent('click_whatsapp', { event_category: 'contact', event_label: 'modal_button' });
-                }}
-                className="w-full flex items-center justify-between p-4 bg-emerald-50 hover:bg-emerald-100 border border-emerald-100 rounded-2xl transition-all group"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="bg-[#25D366] text-white p-3 rounded-xl"><WhatsAppIcon className="w-6 h-6" /></div>
-                  <div>
-                    <p className="font-bold text-gray-900">WhatsApp Oficial</p>
-                  </div>
+          )}
+
+          <footer className="bg-white border-t border-gray-200 py-16 md:py-24">
+            <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6">
+              <div className="flex flex-col md:flex-row justify-between items-center gap-12 md:gap-8">
+                <div className="flex items-center cursor-pointer" onClick={() => setView('home')}>
+                  <Logo />
                 </div>
-                <ChevronRight size={20} className="text-[#25D366] group-hover:translate-x-1 transition-transform" />
-              </button>
-              <a
-                href={`mailto:${CONTACT_EMAIL}`}
-                className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 border border-gray-100 rounded-2xl transition-all group"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="bg-gray-700 text-white p-3 rounded-xl"><Mail size={24} /></div>
-                  <div>
-                    <p className="font-bold text-gray-900">E-mail</p>
-                    <p className="text-xs text-gray-500">{CONTACT_EMAIL}</p>
-                  </div>
+                <p className="text-gray-500 text-[10px] md:text-sm text-center">
+                  &copy; {new Date().getFullYear()} WeddingFin. Todos os direitos reservados.
+                </p>
+                <div className="flex flex-wrap justify-center gap-4 md:gap-8 text-[10px] md:text-sm text-gray-600 font-medium">
+                  <button onClick={() => setView('terms')} className="hover:text-purple-600 transition-colors">Termos de Uso</button>
+                  <button onClick={() => setView('privacy')} className="hover:text-purple-600 transition-colors">Privacidade</button>
+                  <button onClick={() => setIsContactModalOpen(true)} className="hover:text-purple-600 transition-colors">Contato</button>
                 </div>
-                <ChevronRight size={20} className="text-gray-400 group-hover:translate-x-1 transition-transform" />
-              </a>
+              </div>
             </div>
-            <p className="text-center pb-6 text-[10px] text-gray-400 uppercase tracking-widest font-bold">Atendimento Seg-Sex, 8h às 18h</p>
-          </div>
-        </div>
+          </footer>
+
+          <DiscountPopup />
+        </>
       )}
-
-      <footer className="bg-white border-t border-gray-200 py-16 md:py-24">
-        <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-12 md:gap-8">
-            <div className="flex items-center cursor-pointer" onClick={() => setView('home')}>
-              <Logo />
-            </div>
-            <p className="text-gray-500 text-[10px] md:text-sm text-center">
-              &copy; {new Date().getFullYear()} WeddingFin. Todos os direitos reservados.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4 md:gap-8 text-[10px] md:text-sm text-gray-600 font-medium">
-              <button onClick={() => setView('terms')} className="hover:text-purple-600 transition-colors">Termos de Uso</button>
-              <button onClick={() => setView('privacy')} className="hover:text-purple-600 transition-colors">Privacidade</button>
-              <button onClick={() => setIsContactModalOpen(true)} className="hover:text-purple-600 transition-colors">Contato</button>
-            </div>
-          </div>
-        </div>
-      </footer>
-
-      <DiscountPopup />
     </div>
   );
 };

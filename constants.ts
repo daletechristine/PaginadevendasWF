@@ -201,7 +201,7 @@ export const TERMS_OF_USE_TEXT = {
   `
 };
 
-export const VSL_THUMBNAIL_URL = "https://images.unsplash.com/photo-1590004987778-bece5c9adab6?auto=format&fit=crop&w=1280&q=80"; // Placeholder para o VSL
+export const VSL_THUMBNAIL_URL = "https://img.youtube.com/vi/HZVc4d7GxsQ/maxresdefault.jpg";
 
 export const BONUSES = [
   {
