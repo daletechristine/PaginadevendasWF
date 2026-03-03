@@ -130,11 +130,29 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (view === 'home' && !showRestOfPage) return;
-    const timer = setTimeout(() => {
-      setShouldPulse(true);
-      setIsChatOpen(true);
-    }, 15000);
-    return () => clearTimeout(timer);
+
+    let hasScrolled = false;
+    let timer: ReturnType<typeof setTimeout>;
+
+    const handleScroll = () => {
+      // Se o usuário rolou mais de 300px, consideramos que ele está explorando
+      if (window.scrollY > 300 && !hasScrolled) {
+        hasScrolled = true;
+
+        // Dispara o chat após 5 segundos depois que ele começou a rolar
+        timer = setTimeout(() => {
+          setShouldPulse(true);
+          setIsChatOpen(true);
+        }, 5000);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (timer) clearTimeout(timer);
+    };
   }, [view, showRestOfPage]);
 
   useEffect(() => {
