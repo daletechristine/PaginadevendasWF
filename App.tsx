@@ -33,7 +33,6 @@ import {
   TESTIMONIALS,
 
   BONUSES,
-  VSL_THUMBNAIL_URL,
   LOGO_URL
 } from './constants';
 
@@ -84,16 +83,44 @@ const App: React.FC = () => {
   const [userQuestion, setUserQuestion] = useState('');
   const chatInputRef = useRef<HTMLInputElement>(null);
 
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [showRestOfPage, setShowRestOfPage] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const vimeoIframeRef = useRef<HTMLIFrameElement>(null);
+  const vimeoPlayerRef = useRef<any>(null);
 
-  const handlePlayVideo = () => {
-    setIsVideoPlaying(true);
+  useEffect(() => {
     trackEvent('play_video', { event_category: 'engagement', event_label: 'main_vsl' });
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setShowRestOfPage(true);
       trackEvent('show_pitch', { event_category: 'engagement', event_label: 'vsl_delay' });
-    }, 5000); // 5 segundos
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Inicializa o player Vimeo uma única vez após o iframe montar
+  useEffect(() => {
+    const initTimer = setTimeout(() => {
+      if (vimeoIframeRef.current && (window as any).Vimeo) {
+        vimeoPlayerRef.current = new (window as any).Vimeo.Player(vimeoIframeRef.current);
+      }
+    }, 1500);
+    return () => clearTimeout(initTimer);
+  }, []);
+
+  const handleUnmute = () => {
+    setIsMuted(false);
+    trackEvent('unmute_video', { event_category: 'engagement', event_label: 'main_vsl' });
+    if (vimeoPlayerRef.current) {
+      vimeoPlayerRef.current.setVolume(1).then(() => {
+        vimeoPlayerRef.current.setMuted(false);
+      });
+    } else if (vimeoIframeRef.current) {
+      // Fallback via postMessage direto
+      vimeoIframeRef.current.contentWindow?.postMessage(
+        JSON.stringify({ method: 'setVolume', value: 1 }),
+        'https://player.vimeo.com'
+      );
+    }
   };
 
   useEffect(() => {
@@ -106,7 +133,7 @@ const App: React.FC = () => {
     const timer = setTimeout(() => {
       setShouldPulse(true);
       setIsChatOpen(true);
-    }, 5000);
+    }, 15000);
     return () => clearTimeout(timer);
   }, [view, showRestOfPage]);
 
@@ -185,34 +212,28 @@ const App: React.FC = () => {
           </p>
 
           <div className="relative w-full max-w-4xl mx-auto mb-8 md:mb-10 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-            {!isVideoPlaying ? (
-              <div
-                className="relative cursor-pointer group w-full"
-                onClick={handlePlayVideo}
-              >
-                <img src={VSL_THUMBNAIL_URL} alt="Vídeo de Apresentação" className="w-full h-auto drop-shadow-2xl rounded-2xl md:rounded-[2rem] ring-4 ring-white/10" />
-                <div className="absolute inset-0 bg-transparent group-hover:bg-white/5 transition-colors z-10 rounded-[2rem] sm:rounded-[3rem] md:rounded-[4rem]"></div>
-              </div>
-            ) : (
-              <div className="relative w-full aspect-video rounded-2xl shadow-2xl overflow-hidden ring-1 ring-white/20 bg-black">
-                <iframe
-                  className="w-full h-full object-cover scale-[1.01]"
-                  src="https://www.youtube.com/embed/HZVc4d7GxsQ?rel=0&autoplay=1&controls=0&modestbranding=1&disablekb=1&fs=0&playsinline=1"
-                  title="WeddingFin: Vídeo de Apresentação"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              </div>
-            )}
-          </div>
-
-          {!isVideoPlaying && (
-            <div className="text-center animate-pulse -mt-4 mb-8 md:-mt-6 md:mb-10">
-              <p className="text-purple-200 text-sm md:text-base font-medium flex items-center justify-center gap-2">
-                &#9660; Clique no vídeo acima para entender como funciona &#9660;
-              </p>
+            <div className="relative w-full aspect-video rounded-2xl shadow-2xl overflow-hidden ring-1 ring-white/20 bg-black">
+              <iframe
+                ref={vimeoIframeRef}
+                id="vimeo-vsl"
+                className="w-full h-full"
+                src="https://player.vimeo.com/video/1169982008?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&title=0&byline=0&portrait=0"
+                style={{ border: 'none' }}
+                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+                referrerPolicy="strict-origin-when-cross-origin"
+                title="WeddingFin: Vídeo de Apresentação"
+                allowFullScreen
+              ></iframe>
+              {isMuted && (
+                <button
+                  onClick={handleUnmute}
+                  className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 bg-white text-gray-900 font-bold text-sm px-5 py-3 rounded-full shadow-xl hover:scale-105 transition-transform animate-pulse"
+                >
+                  🔊 Clique para ativar o som
+                </button>
+              )}
             </div>
-          )}
+          </div>
 
           {showRestOfPage && (
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
@@ -329,7 +350,7 @@ const App: React.FC = () => {
                   <div className="relative rounded-2xl md:rounded-[32px] overflow-hidden shadow-inner ring-1 ring-gray-200 bg-gray-900 aspect-video">
                     <iframe
                       className="w-full h-full object-cover scale-[1.01]"
-                      src="https://www.youtube.com/embed/tGLgEoExygc?rel=0&controls=0&modestbranding=1&disablekb=1&fs=0&playsinline=1"
+                      src="https://www.youtube.com/embed/tGLgEoExygc?rel=0&controls=0&modestbranding=1&disablekb=1&fs=0&playsinline=1&vq=hd1080&hd=1"
                       title="WeddingFin: Demonstração Completa - Organize as Finanças do Seu Casamento Sem Estresse"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
